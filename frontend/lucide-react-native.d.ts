@@ -1,0 +1,53 @@
+declare module 'lucide-react-native' {
+  import { ComponentType } from 'react';
+  export interface IconProps {
+    color?: any;
+    size?: any;
+    strokeWidth?: any;
+    style?: any;
+    fill?: any;
+  }
+  export type Icon = ComponentType<IconProps>;
+  export const Home: Icon;
+  export const Grid: Icon;
+  export const Map: Icon;
+  export const Radio: Icon;
+  export const Network: Icon;
+  export const WifiOff: Icon;
+  export const ChevronRight: Icon;
+  export const LogOut: Icon;
+  export const Heart: Icon;
+  export const History: Icon;
+  export const Plus: Icon;
+  export const ShieldAlert: Icon;
+  export const Compass: Icon;
+  export const Navigation2: Icon;
+  export const CheckCircle2: Icon;
+  export const Siren: Icon;
+  export const Hospital: Icon;
+  export const Truck: Icon;
+  export const Shield: Icon;
+  export const HeartPulse: Icon;
+  export const Phone: Icon;
+  export const PhoneCall: Icon;
+  export const Zap: Icon;
+  export const Clock: Icon;
+  export const Info: Icon;
+  export const Star: Icon;
+  export const Award: Icon;
+  export const AlertOctagon: Icon;
+  export const Calendar: Icon;
+  export const MapPin: Icon;
+  export const Mic: Icon;
+  export const Navigation: Icon;
+  export const Trash2: Icon;
+  export const Edit: Icon;
+  export const X: Icon;
+  export const User: Icon;
+  export const ChevronLeft: Icon;
+  export const Eye: Icon;
+  export const EyeOff: Icon;
+  export const ShieldCheck: Icon;
+  export const ShieldAlertIcon: Icon;
+  export const Search: Icon;
+}
