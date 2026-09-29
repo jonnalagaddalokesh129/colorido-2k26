@@ -160,3 +160,4 @@ You can now open the app on your mobile device (via **Expo Go** by scanning the 
 2.  **Emergency SOS Pulse**: Tap the large pulsating SOS button on the home tab, accept the prompt, and verify that the alarm registers and displays on your **Incident Log** (`sos-history.tsx`).
 3.  **Transit Dispatch**: Go to the **Services** tab, select **Ambulance Dispatch** or **Vehicle Rescue**, specify a destination, choose your vehicle class, and verify that the system engages **Live Tracking** with active operator dispatches, dynamic speeds, and countdowns.
 4.  **Guardian Contacts**: Add emergency contacts in the profile tab, perform edits, verify validation warnings trigger on incorrect formats, and confirm CRUD functionality works seamlessly.
+# colorido-2k26
