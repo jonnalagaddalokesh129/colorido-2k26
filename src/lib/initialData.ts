@@ -112,7 +112,7 @@ export const INITIAL_EVENTS: EventItem[] = [
     maximum_participants: 40,
     current_participants: 24,
     status: 'open',
-    event_image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=1000&q=80',
+    event_image: '/fine_arts_exhibition.jpg',
     coordinator_name: 'Ananya Deshmukh',
     coordinator_contact: '+91 98451 22341',
     coordinator_email: 'finearts.colorido@university.edu'
