@@ -113,7 +113,7 @@ export const INITIAL_EVENTS: EventItem[] = [
     current_participants: 24,
     status: 'open',
     event_image: '/fine_arts_exhibition.jpg',
-    coordinator_name: 'Ananya Deshmukh',
+    coordinator_name: 'Prof. Sunita Deshmukh',
     coordinator_contact: '+91 98451 22341',
     coordinator_email: 'finearts.colorido@university.edu'
   },
@@ -1333,7 +1333,7 @@ export const INITIAL_SPONSORS: Sponsor[] = [
     id: 'sp_03',
     name: 'Decathlon Sports',
     category: 'GOLD SPONSOR',
-    logo_url: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=300&q=80',
+    logo_url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=300&q=80',
     description: 'Official sports gear and equipment partner for all boys and girls championships.',
     website_url: 'https://decathlon.in',
     display_order: 3
@@ -1360,7 +1360,7 @@ export const INITIAL_SPONSORS: Sponsor[] = [
     id: 'sp_06',
     name: 'Spotify Student',
     category: 'EVENT PARTNER',
-    logo_url: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?auto=format&fit=crop&w=300&q=80',
+    logo_url: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=300&q=80',
     description: 'Official festival playlist partner streaming student indie artist tracks nationwide.',
     website_url: 'https://spotify.com',
     display_order: 6
@@ -1462,19 +1462,6 @@ export const INITIAL_GALLERY: GalleryItem[] = [
 
 export const INITIAL_PARTICIPANTS: Participant[] = [
   {
-    id: 'usr_part_01',
-    user_id: 'usr_part_01',
-    full_name: 'Aarav Sharma',
-    email: 'aarav.sharma@xavier.edu',
-    phone: '+91 98210 11223',
-    college: "St. Xavier's College, Mumbai",
-    department: 'Computer Science',
-    year: '3rd Year',
-    gender: 'Male',
-    city: 'Mumbai',
-    state: 'Maharashtra'
-  },
-  {
     id: 'usr_part_02',
     user_id: 'usr_part_02',
     full_name: 'Diya Krishnan',
@@ -1499,19 +1486,6 @@ export const INITIAL_PARTICIPANTS: Participant[] = [
     gender: 'Male',
     city: 'Pilani',
     state: 'Rajasthan'
-  },
-  {
-    id: 'usr_part_04',
-    user_id: 'usr_part_04',
-    full_name: 'Ananya Deshmukh',
-    email: 'ananya.d@iitm.ac.in',
-    phone: '+91 94451 44556',
-    college: 'IIT Madras',
-    department: 'Aerospace Engineering',
-    year: '3rd Year',
-    gender: 'Female',
-    city: 'Chennai',
-    state: 'Tamil Nadu'
   },
   {
     id: 'usr_part_05',

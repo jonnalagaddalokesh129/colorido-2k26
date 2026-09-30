@@ -31,7 +31,7 @@ INSERT INTO events (
     'v_arts_studio', 'Raja Ravi Varma Fine Arts Pavilion', '2026-10-15', '10:00:00', '13:00:00',
     '2026-10-13 23:59:59+00', 40, 24, 'open',
     'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1000&q=80',
-    'Ananya Deshmukh', '+91 98451 22341', 'finearts.colorido@university.edu'
+    'Prof. Sunita Deshmukh', '+91 98451 22341', 'finearts.colorido@university.edu'
 ),
 (
     'evt_cul_02', 'Music & Band — Solo (Vocal / Instrumental)', 'cultural', 'solo',
@@ -239,10 +239,10 @@ INSERT INTO announcements (title, description, category, priority, is_published,
 INSERT INTO sponsors (name, category, logo_url, description, website_url, display_order) VALUES
 ('Titanium Edge Tech', 'TITLE SPONSOR', 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80', 'Global cloud computing and developer ecosystem pioneer presenting COLORIDO 2K26.', 'https://titaniumedge.tech', 1),
 ('RedBull Energy', 'GOLD SPONSOR', 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=300&q=80', 'Powering athletes, dancers, and creative performers with non-stop adrenaline.', 'https://redbull.com', 2),
-('Decathlon Sports', 'GOLD SPONSOR', 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=300&q=80', 'Official sports gear and equipment partner for all boys and girls championships.', 'https://decathlon.in', 3),
+('Decathlon Sports', 'GOLD SPONSOR', 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=300&q=80', 'Official sports gear and equipment partner for all boys and girls championships.', 'https://decathlon.in', 3),
 ('AudioTechnica Pro', 'SILVER SPONSOR', 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=300&q=80', 'Pioneering stage monitors, studio mics, and live audio rigs for Battle of the Bands.', 'https://audio-technica.com', 4),
 ('Campus Chronicle', 'MEDIA PARTNER', 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=300&q=80', 'Exclusive live stream broadcasts, backstage interviews, and digital press coverage.', 'https://campuschronicle.org', 5),
-('Spotify Student', 'EVENT PARTNER', 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?auto=format&fit=crop&w=300&q=80', 'Official festival playlist partner streaming student indie artist tracks nationwide.', 'https://spotify.com', 6);
+('Spotify Student', 'EVENT PARTNER', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=300&q=80', 'Official festival playlist partner streaming student indie artist tracks nationwide.', 'https://spotify.com', 6);
 
 -- 6. RESULTS (15+ sample competition results)
 INSERT INTO results (event_id, position, winner_type, participant_name, team_name, college, score, points_awarded, is_published) VALUES
@@ -291,25 +291,20 @@ INSERT INTO gallery (title, image_url, category, featured, caption) VALUES
 
 -- 9. SAMPLE PARTICIPANTS & REGISTRATIONS (Sample records)
 INSERT INTO participants (id, full_name, email, phone, college, department, year, gender, city, state) VALUES
-('b0000001-0000-0000-0000-000000000001', 'Aarav Sharma', 'aarav.sharma@xavier.edu', '+91 98210 11223', 'St. Xavier''s College, Mumbai', 'Computer Science', '3rd Year', 'Male', 'Mumbai', 'Maharashtra'),
 ('b0000001-0000-0000-0000-000000000002', 'Diya Krishnan', 'diya.krishnan@loyola.edu', '+91 98401 22334', 'Loyola College, Chennai', 'Visual Arts', '2nd Year', 'Female', 'Chennai', 'Tamil Nadu'),
 ('b0000001-0000-0000-0000-000000000003', 'Kabir Mehta', 'kabir.mehta@bits.edu', '+91 97112 33445', 'BITS Pilani', 'Mechanical Engg', '4th Year', 'Male', 'Pilani', 'Rajasthan'),
-('b0000001-0000-0000-0000-000000000004', 'Ananya Deshmukh', 'ananya.d@iitm.ac.in', '+91 94451 44556', 'IIT Madras', 'Aerospace Engg', '3rd Year', 'Female', 'Chennai', 'Tamil Nadu'),
 ('b0000001-0000-0000-0000-000000000005', 'Rohan Sengupta', 'rohan.sen@jadavpur.edu', '+91 98302 55667', 'Jadavpur University, Kolkata', 'English Literature', '2nd Year', 'Male', 'Kolkata', 'West Bengal')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO registrations (id, registration_id, event_id, participant_name, participant_email, participant_phone, participant_college, participation_type, team_name, team_size, emergency_contact_name, emergency_contact_phone, status, qr_code_data) VALUES
-('c0000001-0000-0000-0000-000000000001', 'COL26-SPT-001001', 'evt_spt_b_11', 'Aarav Sharma', 'aarav.sharma@xavier.edu', '+91 98210 11223', 'St. Xavier''s College, Mumbai', 'team', 'St. Xavier Ballers', 8, 'Sunil Sharma', '+91 98210 99887', 'checked_in', 'COL26-REG:COL26-SPT-001001|EVT:evt_spt_b_11|NAME:Aarav Sharma|COLLEGE:St. Xavier''s College, Mumbai'),
 ('c0000001-0000-0000-0000-000000000002', 'COL26-CUL-001002', 'evt_cul_01', 'Diya Krishnan', 'diya.krishnan@loyola.edu', '+91 98401 22334', 'Loyola College, Chennai', 'individual', NULL, 1, 'P. Krishnan', '+91 98401 88776', 'confirmed', 'COL26-REG:COL26-CUL-001002|EVT:evt_cul_01|NAME:Diya Krishnan|COLLEGE:Loyola College, Chennai'),
 ('c0000001-0000-0000-0000-000000000003', 'COL26-CUL-001003', 'evt_cul_02', 'Kabir Mehta', 'kabir.mehta@bits.edu', '+91 97112 33445', 'BITS Pilani', 'individual', NULL, 1, 'Rajiv Mehta', '+91 97112 77665', 'confirmed', 'COL26-REG:COL26-CUL-001003|EVT:evt_cul_02|NAME:Kabir Mehta|COLLEGE:BITS Pilani'),
-('c0000001-0000-0000-0000-000000000004', 'COL26-SPT-001004', 'evt_spt_g_14', 'Ananya Deshmukh', 'ananya.d@iitm.ac.in', '+91 94451 44556', 'IIT Madras', 'team', 'IITM Phoenix', 9, 'V. Deshmukh', '+91 94451 66554', 'checked_in', 'COL26-REG:COL26-SPT-001004|EVT:evt_spt_g_14|NAME:Ananya Deshmukh|COLLEGE:IIT Madras'),
 ('c0000001-0000-0000-0000-000000000005', 'COL26-CUL-001005', 'evt_cul_10', 'Rohan Sengupta', 'rohan.sen@jadavpur.edu', '+91 98302 55667', 'Jadavpur University, Kolkata', 'individual', NULL, 1, 'Tapan Sengupta', '+91 98302 44332', 'confirmed', 'COL26-REG:COL26-CUL-001005|EVT:evt_cul_10|NAME:Rohan Sengupta|COLLEGE:Jadavpur University, Kolkata')
 ON CONFLICT (id) DO NOTHING;
 
 -- 10. CHECK-INS
 INSERT INTO checkins (registration_id, event_id, participant_name, college, checked_in_by, notes) VALUES
-('COL26-SPT-001001', 'evt_spt_b_11', 'Aarav Sharma', 'St. Xavier''s College, Mumbai', 'Coordinator Suresh (Stadium Gate 1)', 'Full 8-member squad verified with ID cards.'),
-('COL26-SPT-001004', 'evt_spt_g_14', 'Ananya Deshmukh', 'IIT Madras', 'Coordinator Kavitha (Court B Desk)', 'Team roster stamped, jerseys inspected.')
+('COL26-CUL-001002', 'evt_cul_01', 'Diya Krishnan', 'Loyola College, Chennai', 'Coordinator Suresh (Desk 1)', 'Verified student ID and portfolio.')
 ON CONFLICT (registration_id) DO NOTHING;
 
 -- 11. NOTIFICATIONS (Live notifications)

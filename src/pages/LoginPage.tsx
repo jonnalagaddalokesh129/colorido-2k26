@@ -19,6 +19,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate, initialMode = 'login' }
   // Login Form States
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<SocialProvider | null>(null);
@@ -37,9 +38,25 @@ export const LoginPage: React.FC<Props> = ({ onNavigate, initialMode = 'login' }
   const [regRole, setRegRole] = useState<'participant' | 'coordinator'>('participant');
   const [regLoading, setRegLoading] = useState(false);
 
+  // Load remembered email (and ONLY email) on initial mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('colorido_remembered_email');
+    if (savedEmail) {
+      setLoginEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
   const resetFormFields = () => {
-    setLoginEmail('');
-    setLoginPassword('');
+    const savedEmail = localStorage.getItem('colorido_remembered_email');
+    if (savedEmail) {
+      setLoginEmail(savedEmail);
+      setRememberMe(true);
+    } else {
+      setLoginEmail('');
+      setRememberMe(false);
+    }
+    setLoginPassword(''); // Password is never stored or pre-filled
     setRegFullName('');
     setRegEmail('');
     setRegPhone('');
@@ -84,6 +101,18 @@ export const LoginPage: React.FC<Props> = ({ onNavigate, initialMode = 'login' }
       showToast('Please enter your email', 'error');
       return;
     }
+    if (!loginPassword) {
+      showToast('Please enter your password', 'error');
+      return;
+    }
+
+    // Remember or forget ONLY the email address
+    if (rememberMe) {
+      localStorage.setItem('colorido_remembered_email', loginEmail.trim());
+    } else {
+      localStorage.removeItem('colorido_remembered_email');
+    }
+
     setLoginLoading(true);
     const res = await login(loginEmail, loginPassword);
     setLoginLoading(false);
@@ -387,7 +416,12 @@ export const LoginPage: React.FC<Props> = ({ onNavigate, initialMode = 'login' }
 
               <div className="flex items-center justify-between text-xs font-medium pt-1">
                 <label className="flex items-center space-x-2 cursor-pointer group">
-                  <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#006D8F]/30 bg-transparent text-[#20B2AA] focus:ring-[#20B2AA]" />
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={e => setRememberMe(e.target.checked)}
+                    className="w-3.5 h-3.5 rounded border-[#006D8F]/30 bg-transparent text-[#20B2AA] focus:ring-[#20B2AA]"
+                  />
                   <span className="text-[#4A6B6D] group-hover:text-[#064E52] transition-colors">Remember me</span>
                 </label>
                 <button type="button" className="text-[#006D8F] hover:text-[#20B2AA] font-bold transition-colors">

@@ -8,12 +8,12 @@ import {
   Clock, 
   Building, 
   User, 
-  Sparkles,
-  Camera
+  Sparkles
 } from 'lucide-react';
 import { store } from '../../lib/store';
 import { Registration, EventItem, CheckinRecord } from '../../types/database';
 import { useToast } from '../../context/ToastContext';
+import { QRScannerWidget } from '../../components/admin/QRScannerWidget';
 
 export const AdminCheckinPage: React.FC = () => {
   const { showToast } = useToast();
@@ -113,16 +113,23 @@ export const AdminCheckinPage: React.FC = () => {
         {/* Left Column: Scanner Station Form */}
         <div className="lg:col-span-6 space-y-6">
           <div className="bg-[#12172F] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
-            {/* Camera / Barcode simulation view */}
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#1A2142] p-8 text-center space-y-3">
-              <div className="w-16 h-16 rounded-2xl bg-fuchsia-600/20 text-fuchsia-400 flex items-center justify-center mx-auto border border-fuchsia-500/30 animate-pulse">
-                <Camera className="w-8 h-8" />
-              </div>
-              <div>
-                <p className="font-bold text-sm text-white">Optical Scanner Active</p>
-                <p className="text-xs text-slate-400 mt-0.5">Ready for mobile phone camera pass scan</p>
-              </div>
-            </div>
+            {/* Live Camera QR Scanner */}
+            <QRScannerWidget
+              onScan={(decoded) => {
+                // Extract registration ID from full QR string if present
+                // Format: COL26-REG:COL26-SPT-001001|EVT:...|NAME:...|COLLEGE:...
+                let regId = decoded;
+                if (decoded.includes('COL26-REG:')) {
+                  const match = decoded.match(/COL26-REG:([^|]+)/);
+                  if (match) regId = match[1];
+                } else if (decoded.includes(':')) {
+                  const parts = decoded.split(':');
+                  if (parts.length >= 2) regId = parts[1];
+                }
+                setInputCode(regId);
+                handleProcessCheckin(regId);
+              }}
+            />
 
             {/* Manual Scan Input */}
             <form onSubmit={handleFormSubmit} className="space-y-3">

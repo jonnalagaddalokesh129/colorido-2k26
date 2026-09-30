@@ -179,7 +179,10 @@ export const SponsorsPage: React.FC = () => {
                         <img
                           src={sponsor.logo_url}
                           alt={sponsor.name}
-                          className="w-16 h-16 rounded-2xl object-cover border border-white/10 shadow-md"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=300&q=80';
+                          }}
+                          className="w-16 h-16 rounded-2xl object-cover border border-white/10 shadow-md bg-slate-800"
                         />
                         <div>
                           <span className="text-[10px] font-bold uppercase tracking-wider text-fuchsia-400">

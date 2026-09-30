@@ -316,7 +316,10 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onViewEvent, onRegisterE
               <img
                 src={sponsor.logo_url}
                 alt={sponsor.name}
-                className="w-8 h-8 rounded-lg object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=300&q=80';
+                }}
+                className="w-8 h-8 rounded-lg object-cover bg-slate-100"
               />
               <div className="text-left">
                 <p className="text-xs font-bold text-[#064E52]">{sponsor.name}</p>
@@ -338,7 +341,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onViewEvent, onRegisterE
             <span className="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-white/10 text-white border border-white/20">
               Limited Institutional Slots
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h2 className="text-3xl sm:text-5xl font-black !text-white text-white-force tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Ready to claim your place under the spotlight?
             </h2>
             <p className="text-xs sm:text-sm text-[#DDF3F0] leading-relaxed">

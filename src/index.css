@@ -334,7 +334,6 @@
   .print-color {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    color-adjust: exact !important;
   }
 
   /* A4 page for certificate */
@@ -418,37 +417,50 @@ textarea.bg-\[\#1A2142\]::placeholder {
    Palette: Misty Aqua (#DDF3F0), Caribbean Teal (#20B2AA), Peacock Blue (#006D8F), Deep Teal (#064E52)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* 1. All headings default to Deep Teal */
-h1, h2, h3, h4, h5, h6 {
-  color: #064E52;
+/* 1. All headings default to Deep Teal (in @layer base so Tailwind text-white overrides work) */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    color: #064E52;
+  }
 }
 
 /* 2. Fix text-white inside light surfaces (cards, panels, sections) */
-.bg-\[\#12172F\] h1, .bg-\[\#12172F\] h2, .bg-\[\#12172F\] h3, .bg-\[\#12172F\] h4, .bg-\[\#12172F\] h5,
-.bg-\[\#1A2142\] h1, .bg-\[\#1A2142\] h2, .bg-\[\#1A2142\] h3, .bg-\[\#1A2142\] h4, .bg-\[\#1A2142\] h5,
-.bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4,
-.bg-\[\#DDF3F0\] h1, .bg-\[\#DDF3F0\] h2, .bg-\[\#DDF3F0\] h3, .bg-\[\#DDF3F0\] h4,
-.glass-card h1, .glass-card h2, .glass-card h3, .glass-card h4 {
+.bg-\[\#12172F\] h1:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#12172F\] h2:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#12172F\] h3:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#1A2142\] h1:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#1A2142\] h2:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#1A2142\] h3:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-white h1:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-white h2:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-white h3:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#DDF3F0\] h1:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#DDF3F0\] h2:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.bg-\[\#DDF3F0\] h3:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.glass-card h1:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.glass-card h2:not(.text-white):not([class*="text-white"]):not(.text-on-dark), 
+.glass-card h3:not(.text-white):not([class*="text-white"]):not(.text-on-dark) {
   color: #064E52 !important;
 }
 
-/* Override .text-white inside re-skinned light surfaces to Deep Teal (unless button/badge) */
-.bg-\[\#12172F\] .text-white:not(button):not(button *):not(.badge-white):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark),
-.bg-\[\#1A2142\] .text-white:not(button):not(button *):not(.badge-white):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark),
-.bg-white .text-white:not(button):not(button *):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark),
-.bg-\[\#DDF3F0\] .text-white:not(button):not(button *):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark) {
+/* Override .text-white inside re-skinned light surfaces to Deep Teal (unless button/badge or inside dark container) */
+.bg-\[\#12172F\] .text-white:not(button):not(button *):not(.badge-white):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark):not(.text-white-force),
+.bg-\[\#1A2142\] .text-white:not(button):not(button *):not(.badge-white):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark):not(.text-white-force),
+.bg-white .text-white:not(button):not(button *):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark):not(.text-white-force),
+.bg-\[\#DDF3F0\] .text-white:not(button):not(button *):not([class*="bg-[#20B2AA]"]):not([class*="bg-[#006D8F]"]):not([class*="bg-[#064E52]"]):not([class*="bg-gradient-"]):not(.text-on-dark):not(.text-white-force) {
   color: #064E52 !important;
 }
 
-/* Force light text on designated dark components (Overrides the rules above) */
+/* Force pure white text on designated dark components */
 body .text-on-dark, 
 body .text-on-dark h1, 
 body .text-on-dark h2, 
 body .text-on-dark h3, 
 body .text-on-dark h4, 
 body .text-on-dark p, 
-body .text-on-dark span {
-  color: #F0FDF8 !important; /* Cool mixed whitish mint */
+body .text-on-dark span,
+.text-white-force {
+  color: #FFFFFF !important;
 }
 
 /* 3. Slate text inside light surfaces becomes readable Peacock Blue / Muted Dark Teal */

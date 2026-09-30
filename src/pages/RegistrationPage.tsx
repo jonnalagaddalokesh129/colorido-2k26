@@ -734,11 +734,11 @@ export const RegistrationPage: React.FC<Props> = ({
                 type="button"
                 onClick={() => {
                   switchDemoUser('participant');
-                  showToast('Logged in as Aarav Sharma (Student Participant)!', 'success');
+                  showToast('Logged in as Student Participant!', 'success');
                 }}
                 className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-emerald-400 font-bold transition-all text-[11px]"
               >
-                👤 Quick Login: Aarav Sharma (Student)
+                👤 Quick Login: Student Participant
               </button>
               <button
                 type="button"

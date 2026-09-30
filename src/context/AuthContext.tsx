@@ -57,6 +57,7 @@ interface AuthContextType {
   loginWithGoogle: () => Promise<{ success: boolean; message?: string; user?: UserProfile }>;
   loginWithProvider: (provider: SocialProvider) => Promise<{ success: boolean; message?: string; user?: UserProfile }>;
   register: (profile: Partial<UserProfile>) => Promise<{ success: boolean; message?: string; user?: UserProfile }>;
+  updateProfile: (updates: Partial<UserProfile>) => void;
   logout: () => void;
   switchDemoUser: (role: UserRole) => void;
 }
@@ -243,6 +244,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true, user: newUser };
   };
 
+  const updateProfile = (updates: Partial<UserProfile>) => {
+    if (!user) return;
+    const updatedUser = { ...user, ...updates };
+    setUser(updatedUser);
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedUser));
+    showToast('Profile updated successfully! 🎉', 'success');
+  };
+
   const logout = () => {
     setUser(null);
     showToast('You have been logged out.', 'info');
@@ -265,6 +274,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loginWithGoogle,
         loginWithProvider,
         register,
+        updateProfile,
         logout,
         switchDemoUser,
       }}

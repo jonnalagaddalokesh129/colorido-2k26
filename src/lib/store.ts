@@ -151,7 +151,12 @@ class ColoridoStore {
 
   // --- REGISTRATIONS & PARTICIPANTS ---
   public getRegistrations(): Registration[] {
-    return this.load<Registration[]>(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
+    const list = this.load<Registration[]>(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
+    const cleaned = list.filter(r => !r.participant_name.includes('Aarav') && !r.participant_name.includes('Ananya'));
+    if (cleaned.length !== list.length) {
+      this.save(STORAGE_KEYS.REGISTRATIONS, cleaned);
+    }
+    return cleaned;
   }
 
   public getRegistrationById(id: string): Registration | undefined {
@@ -195,34 +200,34 @@ class ColoridoStore {
   }
 
   public getParticipants(): Participant[] {
-    return this.load<Participant[]>(STORAGE_KEYS.PARTICIPANTS, INITIAL_PARTICIPANTS);
+    const list = this.load<Participant[]>(STORAGE_KEYS.PARTICIPANTS, INITIAL_PARTICIPANTS);
+    const cleaned = list.filter(p => !p.full_name.includes('Aarav') && !p.full_name.includes('Ananya'));
+    if (cleaned.length !== list.length) {
+      this.save(STORAGE_KEYS.PARTICIPANTS, cleaned);
+    }
+    return cleaned;
   }
 
   // --- CHECK-INS ---
   public getCheckins(): CheckinRecord[] {
     const initialCheckins: CheckinRecord[] = [
       {
-        id: 'chk_01',
-        registration_id: 'COL26-SPT-001001',
-        event_id: 'evt_spt_b_11',
-        participant_name: 'Aarav Sharma',
-        college: "St. Xavier's College, Mumbai",
-        checked_in_by: 'Coordinator Suresh (Stadium Gate 1)',
-        checked_in_at: '2026-10-15T08:15:00Z',
-        notes: 'Full squad verified with university ID cards.'
-      },
-      {
         id: 'chk_02',
-        registration_id: 'COL26-SPT-001004',
-        event_id: 'evt_spt_g_14',
-        participant_name: 'Ananya Deshmukh',
-        college: 'IIT Madras',
-        checked_in_by: 'Coordinator Kavitha (Court B Desk)',
+        registration_id: 'COL26-CUL-001002',
+        event_id: 'evt_cul_01',
+        participant_name: 'Diya Krishnan',
+        college: 'Loyola College, Chennai',
+        checked_in_by: 'Coordinator Suresh (Desk 1)',
         checked_in_at: '2026-10-15T08:45:00Z',
-        notes: 'Team roster stamped, jerseys inspected.'
+        notes: 'Verified student ID and portfolio.'
       }
     ];
-    return this.load<CheckinRecord[]>(STORAGE_KEYS.CHECKINS, initialCheckins);
+    const list = this.load<CheckinRecord[]>(STORAGE_KEYS.CHECKINS, initialCheckins);
+    const cleaned = list.filter(c => !c.participant_name.includes('Aarav') && !c.participant_name.includes('Ananya'));
+    if (cleaned.length !== list.length) {
+      this.save(STORAGE_KEYS.CHECKINS, cleaned);
+    }
+    return cleaned;
   }
 
   public isCheckedIn(registrationId: string): boolean {
@@ -475,7 +480,23 @@ class ColoridoStore {
 
   // --- SPONSORS ---
   public getSponsors(): Sponsor[] {
-    return this.load<Sponsor[]>(STORAGE_KEYS.SPONSORS, INITIAL_SPONSORS);
+    const list = this.load<Sponsor[]>(STORAGE_KEYS.SPONSORS, INITIAL_SPONSORS);
+    let updated = false;
+    const cleaned = list.map(s => {
+      if (s.name.includes('Decathlon') && (s.logo_url.includes('photo-1517649763962') || !s.logo_url)) {
+        updated = true;
+        return { ...s, logo_url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=300&q=80' };
+      }
+      if (s.name.includes('Spotify') && (s.logo_url.includes('photo-1614680376593') || !s.logo_url)) {
+        updated = true;
+        return { ...s, logo_url: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=300&q=80' };
+      }
+      return s;
+    });
+    if (updated) {
+      this.save(STORAGE_KEYS.SPONSORS, cleaned);
+    }
+    return cleaned;
   }
 
   public addSponsor(sponsor: Sponsor): void {

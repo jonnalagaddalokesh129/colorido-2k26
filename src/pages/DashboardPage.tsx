@@ -16,7 +16,8 @@ import {
   ArrowRight,
   Lock,
   UserPlus,
-  LogIn
+  LogIn,
+  Pencil
 } from 'lucide-react';
 import { store } from '../lib/store';
 import { Registration, EventItem, CertificateItem, ResultItem, NotificationItem } from '../types/database';
@@ -24,6 +25,7 @@ import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { DigitalPassModal } from '../components/dashboard/DigitalPassModal';
 import { CertificateModal } from '../components/dashboard/CertificateModal';
+import { EditProfileModal } from '../components/dashboard/EditProfileModal';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -31,7 +33,7 @@ interface Props {
 }
 
 export const DashboardPage: React.FC<Props> = ({ onNavigate, onViewEvent }) => {
-  const { user, switchDemoUser } = useAuth();
+  const { user, switchDemoUser, updateProfile } = useAuth();
   const { favorites, toggleFavorite } = useFavorites();
 
   const [registrations, setRegistrations] = useState<Registration[]>([]);
@@ -43,6 +45,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate, onViewEvent }) => {
   // Modals state
   const [selectedPassReg, setSelectedPassReg] = useState<Registration | null>(null);
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
+  const [showEditProfile, setShowEditProfile] = useState(false);
 
   useEffect(() => {
     const update = () => {
@@ -135,6 +138,13 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate, onViewEvent }) => {
               </>
             ) : (
               <>
+                <button
+                  onClick={() => setShowEditProfile(true)}
+                  className="px-5 py-2.5 rounded-xl bg-white hover:bg-[#DDF3F0] text-[#064E52] font-bold text-xs border border-[#006D8F]/25 shadow-xs transition-all flex items-center space-x-1.5"
+                >
+                  <Pencil className="w-3.5 h-3.5 text-[#006D8F]" />
+                  <span>Edit Profile</span>
+                </button>
                 <button
                   onClick={() => onNavigate('/events')}
                   className="px-5 py-2.5 rounded-xl bg-white hover:bg-[#DDF3F0] text-[#006D8F] font-bold text-xs border border-[#006D8F]/25 shadow-xs transition-colors"
@@ -547,6 +557,14 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate, onViewEvent }) => {
           onClose={() => setSelectedCert(null)}
         />
       )}
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={showEditProfile}
+        onClose={() => setShowEditProfile(false)}
+        user={user}
+        onSave={updateProfile}
+      />
     </div>
   );
 };
