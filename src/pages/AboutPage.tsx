@@ -10,15 +10,15 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#20B2AA]/15 border border-[#20B2AA]/30 text-[#006D8F] text-xs font-bold">
-          <Sparkles className="w-3.5 h-3.5" />
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#10051D] border border-[#FF1493]/35 text-[#FF2B9A] text-xs font-bold shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-[#FF1493]" />
           <span>Our Legacy &amp; Vision</span>
         </div>
-        <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-[#064E52] tracking-tight leading-tight">
-          Where Talent Meets the Spotlight
+        <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-[#F5F0FF] tracking-tight leading-tight">
+          Where Culture, Talent &amp; Sport <span className="gradient-text-hero">Come Alive</span>
         </h1>
-        <p className="text-xs sm:text-base text-[#006D8F] max-w-2xl mx-auto leading-relaxed">
-          Founded as an inter-university celebration of creative spirit and athletic vigor, COLORIDO 2K26 is now the country's hallmark annual stage for collegiate excellence.
+        <p className="text-xs sm:text-base text-[#B9A9D6] max-w-2xl mx-auto leading-relaxed">
+          Founded as an inter-university celebration of creative spirit and athletic vigor, COLORIDO 2K26 is the country's hallmark annual stage for collegiate excellence.
         </p>
       </div>
 

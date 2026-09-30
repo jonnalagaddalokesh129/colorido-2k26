@@ -17,6 +17,7 @@ import { Footer } from './components/layout/Footer';
 /* ── Public Pages ── */
 import { HomePage }          from './pages/HomePage';
 import { AboutPage }         from './pages/AboutPage';
+import { HighlightsPage }    from './pages/HighlightsPage';
 import { EventsPage }        from './pages/EventsPage';
 import { EventDetailPage }   from './pages/EventDetailPage';
 import { SchedulePage }      from './pages/SchedulePage';
@@ -117,13 +118,37 @@ function renderPublicPage(path: string, navigate: (to: string) => void): React.R
     return <VenuesPage initialVenueId={params.get('id') || params.get('venue') || undefined} onViewEvent={toEvent} />;
   }
 
+  /* ── Highlights Page (NO 404!) ── */
+  if (path === '/highlights' || path.startsWith('/highlights?')) {
+    return <HighlightsPage onNavigate={navigate} />;
+  }
+
+  /* ── Sports, Culture & Talent shortcuts ── */
+  if (path === '/sports') {
+    return <EventsPage initialCategory="SPORTS" onViewEvent={toEvent} onRegisterEvent={toReg} />;
+  }
+  if (path === '/culture') {
+    return <EventsPage initialCategory="CULTURAL" onViewEvent={toEvent} onRegisterEvent={toReg} />;
+  }
+  if (path === '/talent') {
+    return <EventsPage initialCategory="CULTURAL" onViewEvent={toEvent} onRegisterEvent={toReg} />;
+  }
+
   /* ── Events explorer ── */
-  if (path === '/events') return (
-    <EventsPage
-      onViewEvent={toEvent}
-      onRegisterEvent={toReg}
-    />
-  );
+  if (path === '/events' || path.startsWith('/events?')) {
+    const params = new URLSearchParams(path.includes('?') ? path.split('?')[1] : '');
+    const rawCat = params.get('category');
+    let cat = rawCat ? rawCat.toUpperCase() : undefined;
+    if (cat === 'SPORTS') cat = 'SPORTS';
+    if (cat === 'CULTURE' || cat === 'CULTURAL') cat = 'CULTURAL';
+    return (
+      <EventsPage
+        initialCategory={cat}
+        onViewEvent={toEvent}
+        onRegisterEvent={toReg}
+      />
+    );
+  }
   if (path.startsWith('/events/')) {
     const id = path.replace('/events/', '');
     return (
@@ -200,7 +225,7 @@ function renderPublicPage(path: string, navigate: (to: string) => void): React.R
     <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6 py-24">
       <p
         className="text-8xl font-black text-transparent bg-clip-text"
-        style={{ backgroundImage: 'linear-gradient(135deg, #10B981, #D4AF37)' }}
+        style={{ backgroundImage: 'linear-gradient(135deg, #FF1493, #7C3AED)' }}
       >
         404
       </p>
@@ -283,7 +308,7 @@ function AppShell() {
   const setCoordTab = (tab: string) => navigate(tab === 'overview' ? '/coordinator' : `/coordinator/${tab}`);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#DDF3F0] text-[#064E52]">
+    <div className="min-h-screen flex flex-col bg-[#05030D] text-[#F5F0FF] selection:bg-[#FF1493]/30 selection:text-white">
 
       {/* ── Sticky Navbar (hidden on auth & portal pages) ── */}
       {!isAuthRoute && !isSpecialRoute && (
@@ -296,8 +321,13 @@ function AppShell() {
         />
       )}
 
-      {/* ── Main Content ── */}
-      <main className="flex-1">
+      {/* ── Main Content (Compensated exactly once for fixed header) ── */}
+      <main 
+        className="flex-1"
+        style={{
+          paddingTop: (!isAuthRoute && !isSpecialRoute) ? 'var(--header-height, 185px)' : 0
+        }}
+      >
         {isAdminRoute ? (
           <AdminLayout
             currentTab={adminTab}

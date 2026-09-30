@@ -9,19 +9,35 @@ interface Props {
 }
 
 export const ColoridoLogo: React.FC<Props> = ({
+  size = 'md',
   className = '',
 }) => {
+  const getHeight = () => {
+    switch (size) {
+      case 'sm':
+        return 'clamp(32px, 3.8vw, 40px)';
+      case 'lg':
+        return 'clamp(56px, 6.5vw, 76px)';
+      case 'xl':
+        return 'clamp(68px, 8vw, 96px)';
+      case 'md':
+      default:
+        return 'clamp(38px, 4.2vw, 46px)';
+    }
+  };
+
   return (
     <div className={`flex items-center cursor-pointer select-none ${className}`}>
       <img
         src={userPromptedLogo}
         alt="COLORIDO 2K26 - National Level Cultural & Sports Festival"
         style={{
-          height: 'clamp(52px, 7vw, 72px)',
+          height: getHeight(),
           width: 'auto',
-          maxWidth: 'clamp(200px, 28vw, 300px)',
+          maxWidth: 'clamp(140px, 18vw, 220px)',
           objectFit: 'contain',
           display: 'block',
+          filter: 'drop-shadow(0 0 12px rgba(255, 20, 147, 0.45)) drop-shadow(0 0 24px rgba(91, 33, 245, 0.35))'
         }}
       />
     </div>
