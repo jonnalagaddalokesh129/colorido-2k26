@@ -133,24 +133,25 @@ export const Navbar: React.FC<Props> = ({
       {/* ========================================================================= */}
       {/* 1. TOP INSTITUTIONAL HEADER: R.V.R. & J.C. COLLEGE OF ENGINEERING         */}
       {/* ========================================================================= */}
-      <div className="relative w-full bg-[#05030D] border-b border-[rgba(216,180,254,0.08)] overflow-hidden py-3 px-3 sm:px-6">
+      <div className="relative w-full bg-[#05030D] border-b border-[rgba(216,180,254,0.08)] overflow-hidden py-1.5 sm:py-2 md:py-3 px-2 sm:px-4 md:px-6">
         {/* Subtle Violet and Magenta Radial Background Glows */}
         <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-28 bg-[#5B21F5]/10 blur-[80px] pointer-events-none rounded-full" />
         <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[500px] h-28 bg-[#FF1493]/10 blur-[80px] pointer-events-none rounded-full" />
 
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 relative z-10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-1.5 sm:gap-2.5 md:gap-4 relative z-10">
           
-          {/* Left: Official College Crest Logo */}
-          <div className="flex items-center space-x-3 flex-shrink-0">
-            <div className="p-1.5 rounded-2xl bg-[#080514]/90 border border-[rgba(216,180,254,0.22)] shadow-[0_0_15px_rgba(91,33,245,0.2)] hover:border-[#FF1493]/50 transition-all duration-300">
+          {/* Top row on mobile: Crest on left, mobile badges on right */}
+          <div className="flex items-center justify-between w-full md:w-auto space-x-2 sm:space-x-3 flex-shrink-0">
+            {/* Left: Official College Crest Logo */}
+            <div className="p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-[#080514]/90 border border-[rgba(216,180,254,0.22)] shadow-[0_0_15px_rgba(91,33,245,0.2)] hover:border-[#FF1493]/50 transition-all duration-300 flex-shrink-0">
               <img
                 src="/rvrjc_crest_trans.png"
                 alt="R.V.R. & J.C. College of Engineering Logo"
-                className="h-14 sm:h-16 md:h-18 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,20,147,0.2)]"
+                className="h-10 sm:h-12 md:h-16 lg:h-18 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,20,147,0.2)]"
               />
             </div>
             
-            {/* Accreditation Badges on Left (Desktop) */}
+            {/* Accreditation Badges on Left (Desktop xl) */}
             <div className="hidden xl:flex items-center p-1.5 rounded-xl bg-[#080514]/70 border border-[rgba(216,180,254,0.14)]">
               <img
                 src="/rvrjc_acc_left_trans.png"
@@ -158,48 +159,65 @@ export const Navbar: React.FC<Props> = ({
                 className="h-8 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
               />
             </div>
+
+            {/* Mobile-only Institutional Badges on Top Right (EAPCET RVJC Code + 41 Years) */}
+            <div className="flex md:hidden items-center space-x-1.5 flex-shrink-0">
+              <div className="px-2 py-0.5 rounded-lg bg-[#10051D] border border-[#7C3AED]/50 text-center shadow-xs">
+                <span className="text-[7px] font-bold uppercase tracking-wider text-[#B9A9D6] block leading-none">Code</span>
+                <span className="text-[10px] font-black font-mono tracking-wider text-white block leading-tight">
+                  RVJC
+                </span>
+              </div>
+              <div className="p-0.5 rounded-xl bg-[#080514]/90 border border-[rgba(216,180,254,0.22)] shadow-[0_0_12px_rgba(255,20,147,0.2)]">
+                <img
+                  src="/rvrjc_41years_badge.png"
+                  alt="Celebrating 41 Years"
+                  className="h-9 sm:h-10 w-auto object-contain"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Center: Institutional Typography & Sponsoring Information */}
-          <div className="text-center space-y-1 flex-1 min-w-0 px-1 sm:px-4">
-            {/* Main College Title */}
-            <h1 className="font-display font-black text-lg sm:text-2xl md:text-2xl lg:text-3xl text-[#F5F0FF] tracking-tight leading-tight drop-shadow-[0_0_15px_rgba(255,20,147,0.25)]">
+          <div className="text-center space-y-0.5 sm:space-y-1 flex-1 min-w-0 px-1 sm:px-3">
+            {/* Main College Title: wraps naturally without clipping */}
+            <h1 className="font-display font-black text-xs sm:text-base md:text-xl lg:text-3xl text-[#F5F0FF] tracking-tight leading-tight sm:leading-snug drop-shadow-[0_0_15px_rgba(255,20,147,0.25)]">
               R.V.R. &amp; J.C. COLLEGE OF ENGINEERING
             </h1>
 
             {/* Status & Autonomous Tag */}
-            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
+            <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 text-[9px] sm:text-xs">
               <span className="font-extrabold uppercase tracking-widest text-[#FF2B9A] drop-shadow-[0_0_8px_rgba(255,43,154,0.4)]">
                 (AUTONOMOUS)
               </span>
-              <span className="text-[#D8B4FE]/40">•</span>
-              <span className="font-medium text-[#D8B4FE]">
+              <span className="text-[#D8B4FE]/40 hidden sm:inline">•</span>
+              <span className="font-medium text-[#D8B4FE] text-[9px] sm:text-xs">
                 Sponsored by Nagarjuna Education Society
               </span>
             </div>
 
             {/* University Affiliation */}
-            <p className="text-[10px] sm:text-[11px] text-[#B9A9D6] font-medium tracking-wide">
+            <p className="text-[8px] sm:text-[10px] md:text-[11px] text-[#B9A9D6] font-medium tracking-wide">
               Affiliated to Acharya Nagarjuna University
             </p>
 
             {/* Mobile/Tablet Accreditation Logos Strip */}
-            <div className="flex xl:hidden items-center justify-center gap-2 pt-1">
+            <div className="flex xl:hidden items-center justify-center gap-2 pt-0.5 sm:pt-1">
               <img
                 src="/rvrjc_acc_left_trans.png"
                 alt="Accreditations"
-                className="h-6 w-auto object-contain opacity-85"
+                className="h-4 sm:h-5 md:h-6 w-auto object-contain opacity-85"
               />
               <img
                 src="/rvrjc_acc_right_trans.png"
                 alt="Affiliations"
-                className="h-6 w-auto object-contain opacity-85"
+                className="h-4 sm:h-5 md:h-6 w-auto object-contain opacity-85"
               />
             </div>
           </div>
 
-          {/* Right: Accreditations, EAPCET Code Badge & 41 Years Celebration Logo */}
-          <div className="flex items-center space-x-3 sm:space-x-4 flex-shrink-0">
+          {/* Right: Accreditations, EAPCET Code Badge & 41 Years Celebration Logo (Desktop md+) */}
+          <div className="hidden md:flex items-center space-x-3 sm:space-x-4 flex-shrink-0">
             {/* Right Accreditations (TUV SUD, ARIIA, IIC) - Desktop */}
             <div className="hidden xl:flex items-center p-1.5 rounded-xl bg-[#080514]/70 border border-[rgba(216,180,254,0.14)]">
               <img
@@ -227,7 +245,6 @@ export const Navbar: React.FC<Props> = ({
                 className="h-12 sm:h-14 md:h-16 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,215,0,0.3)]"
               />
             </div>
-
           </div>
         </div>
 
@@ -247,23 +264,22 @@ export const Navbar: React.FC<Props> = ({
       {/* ========================================================================= */}
       <div 
         ref={navBarRef}
-        className="w-full relative py-2 sm:py-2.5 pointer-events-auto z-50"
+        className="w-full relative py-1.5 sm:py-2.5 pointer-events-auto z-50 px-2 sm:px-3"
         style={{ boxSizing: 'border-box' }}
       >
         <div 
-          className="mx-auto rounded-[18px] transition-all duration-300"
+          className="mx-auto rounded-[16px] sm:rounded-[18px] transition-all duration-300"
           style={{
-            width: 'min(1280px, calc(100% - 24px))',
+            width: 'min(1280px, 100%)',
             maxWidth: '1280px',
             margin: '0 auto',
             boxSizing: 'border-box',
-            padding: '8px 14px',
-            borderRadius: '18px',
-            background: 'rgba(8, 5, 20, 0.82)',
+            padding: '6px 10px',
+            background: 'rgba(8, 5, 20, 0.85)',
             backdropFilter: 'blur(18px)',
             WebkitBackdropFilter: 'blur(18px)',
             border: '1px solid rgba(255, 20, 147, 0.35)',
-            boxShadow: '0 10px 40px rgba(91, 33, 245, 0.20)',
+            boxShadow: '0 8px 32px rgba(91, 33, 245, 0.22)',
             overflow: 'visible'
           }}
         >
@@ -551,19 +567,19 @@ export const Navbar: React.FC<Props> = ({
             {/* Left: COLORIDO 2K26 Logo */}
             <div 
               onClick={() => handleLinkClick('/')}
-              className="cursor-pointer flex items-center space-x-2 flex-shrink-0 group"
+              className="cursor-pointer flex items-center space-x-1.5 flex-shrink-0 group"
             >
-              <ColoridoLogo variant="inline" size="sm" />
+              <ColoridoLogo variant="inline" size="sm" className="max-w-[125px] sm:max-w-[170px]" />
             </div>
 
-            {/* Right: Compact Search + Bell + Register + Hamburger */}
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            {/* Right: Touch-friendly Controls (Search + Bell + Register + Hamburger) */}
+            <div className="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
               <button
                 onClick={onOpenSearch}
-                className="w-8 h-8 rounded-xl bg-[#10051D] border border-[rgba(216,180,254,0.18)] hover:border-[#FF1493]/40 text-[#B9A9D6] hover:text-white flex items-center justify-center transition-colors"
+                className="w-10 h-10 sm:w-10 sm:h-10 rounded-xl bg-[#10051D] border border-[rgba(216,180,254,0.2)] hover:border-[#FF1493]/50 text-[#D8B4FE] hover:text-white flex items-center justify-center transition-colors active:scale-95"
                 aria-label="Search festival"
               >
-                <Search className="w-3.5 h-3.5 text-[#FF1493]" />
+                <Search className="w-4 h-4 text-[#FF1493]" />
               </button>
 
               <button
@@ -571,12 +587,12 @@ export const Navbar: React.FC<Props> = ({
                   setNotifDropdownOpen(!notifDropdownOpen);
                   setUserDropdownOpen(false);
                 }}
-                className="relative w-8 h-8 rounded-xl bg-[#10051D] border border-[rgba(216,180,254,0.18)] hover:border-[#FF1493]/40 text-[#B9A9D6] hover:text-[#FF1493] flex items-center justify-center transition-colors"
+                className="relative w-10 h-10 sm:w-10 sm:h-10 rounded-xl bg-[#10051D] border border-[rgba(216,180,254,0.2)] hover:border-[#FF1493]/50 text-[#D8B4FE] hover:text-[#FF1493] flex items-center justify-center transition-colors active:scale-95"
                 aria-label="Notifications"
               >
-                <Bell className="w-3.5 h-3.5" />
+                <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#FF1493] text-[9px] font-bold text-white">
+                  <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-[#FF1493] text-[9px] font-black text-white shadow-md shadow-[#FF1493]/60">
                     {unreadCount}
                   </span>
                 )}
@@ -584,7 +600,7 @@ export const Navbar: React.FC<Props> = ({
 
               <button
                 onClick={() => handleLinkClick('/register')}
-                className="hidden sm:inline-flex px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider text-white flex-shrink-0"
+                className="hidden sm:inline-flex px-3.5 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider text-white flex-shrink-0 active:scale-95"
                 style={{
                   background: 'linear-gradient(135deg, #FF1493, #7C3AED)',
                   border: '1px solid rgba(255, 255, 255, 0.25)'
@@ -595,10 +611,10 @@ export const Navbar: React.FC<Props> = ({
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="w-8 h-8 rounded-xl bg-[#10051D] border border-[rgba(216,180,254,0.25)] hover:border-[#FF1493] text-white hover:text-[#FF1493] flex items-center justify-center transition-colors"
+                className="w-10 h-10 sm:w-10 sm:h-10 rounded-xl bg-[#10051D] border border-[rgba(216,180,254,0.25)] hover:border-[#FF1493] text-white hover:text-[#FF1493] flex items-center justify-center transition-colors active:scale-95"
                 aria-label="Toggle Navigation Menu"
               >
-                {mobileMenuOpen ? <X className="w-4 h-4 text-[#FF2B9A]" /> : <Menu className="w-4 h-4" />}
+                {mobileMenuOpen ? <X className="w-5 h-5 text-[#FF2B9A]" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>

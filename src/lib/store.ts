@@ -12,7 +12,9 @@ import {
   NotificationItem,
   CertificateItem,
   CheckinRecord,
-  ContactMessage
+  ContactMessage,
+  WinnerAssignment,
+  WinnerPosition
 } from '../types/database';
 
 import {
@@ -46,7 +48,8 @@ const STORAGE_KEYS = {
   CHECKINS: 'colorido_checkins_v1',
   MESSAGES: 'colorido_contact_messages_v1',
   FAVORITES: 'colorido_favorites_v1',
-  SCORING_CONFIG: 'colorido_scoring_config_v1'
+  SCORING_CONFIG: 'colorido_scoring_config_v1',
+  WINNER_ASSIGNMENTS: 'colorido_winner_assignments_v1',
 };
 
 export interface ScoringConfig {
@@ -65,20 +68,34 @@ const DEFAULT_SCORING: ScoringConfig = {
 
 class ColoridoStore {
   private listeners: Set<() => void> = new Set();
+  private memoryCache: Map<string, any> = new Map();
 
   private load<T>(key: string, fallback: T): T {
-    try {
-      const data = localStorage.getItem(key);
-      if (!data) return fallback;
-      return JSON.parse(data);
-    } catch {
-      return fallback;
+    if (this.memoryCache.has(key)) {
+      return this.memoryCache.get(key) as T;
     }
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const data = localStorage.getItem(key);
+        if (data) {
+          const parsed = JSON.parse(data);
+          this.memoryCache.set(key, parsed);
+          return parsed;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    this.memoryCache.set(key, fallback);
+    return fallback;
   }
 
   private save<T>(key: string, value: T): void {
+    this.memoryCache.set(key, value);
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
     } catch (e) {
       console.error('Failed to persist to localStorage', e);
     }
@@ -439,12 +456,27 @@ class ColoridoStore {
     return this.load<CertificateItem[]>(STORAGE_KEYS.CERTIFICATES, INITIAL_CERTIFICATES);
   }
 
-  public getCertificatesForUser(userNameOrEmail: string): CertificateItem[] {
-    const term = userNameOrEmail.toLowerCase();
-    return this.getCertificates().filter(c => 
+  /** Return certificates for a specific user, by userId (preferred) or name-fallback */
+  public getCertificatesForUser(userIdOrName: string): CertificateItem[] {
+    const all = this.getCertificates().filter(c => c.status !== 'revoked');
+    // Try exact user_id match first
+    const byId = all.filter(c => c.user_id === userIdOrName);
+    if (byId.length > 0) return byId;
+    // Fallback: name includes (for demo certs without user_id)
+    const term = userIdOrName.toLowerCase();
+    return all.filter(c =>
       c.participant_name.toLowerCase().includes(term) ||
       (c.college && c.college.toLowerCase().includes(term))
     );
+  }
+
+  /** Get all non-revoked certificates for a user by userId */
+  public getCertificatesByUserId(userId: string): CertificateItem[] {
+    return this.getCertificates().filter(c => c.user_id === userId && c.status !== 'revoked');
+  }
+
+  public getCertificateById(certId: string): CertificateItem | undefined {
+    return this.getCertificates().find(c => c.certificate_id === certId || c.id === certId);
   }
 
   public addCertificate(cert: CertificateItem): void {
@@ -453,12 +485,254 @@ class ColoridoStore {
     this.save(STORAGE_KEYS.CERTIFICATES, list);
   }
 
+  public updateCertificate(id: string, updates: Partial<CertificateItem>): void {
+    const list = this.getCertificates().map(c =>
+      (c.id === id || c.certificate_id === id) ? { ...c, ...updates, updated_at: new Date().toISOString() } : c
+    );
+    this.save(STORAGE_KEYS.CERTIFICATES, list);
+  }
+
+  /** Issue a participation certificate for a confirmed registration.
+   *  Idempotent: returns existing cert if already issued for same reg+event. */
+  public issueParticipationCertificate(
+    registration: Registration,
+    adminUserId: string
+  ): { success: boolean; cert?: CertificateItem; message: string } {
+    // Check eligibility: registration must be confirmed/checked_in
+    if (!['confirmed', 'checked_in'].includes(registration.status)) {
+      return { success: false, message: 'Registration status must be confirmed or checked in.' };
+    }
+
+    const all = this.getCertificates();
+    // Prevent duplicate participation certificate for same registration
+    const existing = all.find(
+      c => c.registration_id === registration.registration_id &&
+           c.certificate_type === 'Participation Certificate' &&
+           c.status !== 'revoked'
+    );
+    if (existing) return { success: true, cert: existing, message: 'Certificate already issued.' };
+
+    const event = this.getEventById(registration.event_id);
+    const certId = `CERT-COL26-P${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    const hash = `SHA256-COL26-PART-${registration.registration_id}-${Date.now().toString(36).toUpperCase()}`;
+
+    const cert: CertificateItem = {
+      id: `cert_part_${Date.now()}`,
+      certificate_id: certId,
+      registration_id: registration.registration_id,
+      event_id: registration.event_id,
+      event_name: event?.event_name || registration.event_id,
+      user_id: registration.user_id,
+      participant_name: registration.participant_name,
+      college: registration.participant_college,
+      certificate_type: 'Participation Certificate',
+      achievement: 'Official Participant',
+      issue_date: new Date().toISOString().split('T')[0],
+      authorized_signatory_1: 'Dr. Arvind Sharma (Festival Convener)',
+      authorized_signatory_2: 'Prof. Sunita Rao (Dean Student Affairs)',
+      verification_hash: hash,
+      status: 'issued',
+      assigned_by: adminUserId,
+      updated_at: new Date().toISOString(),
+    };
+    this.addCertificate(cert);
+    return { success: true, cert, message: 'Participation certificate issued successfully.' };
+  }
+
+  /** Bulk-issue participation certificates for all eligible registrations of an event */
+  public bulkIssueParticipationCertificates(
+    eventId: string,
+    adminUserId: string
+  ): { issued: number; skipped: number } {
+    const regs = this.getRegistrations().filter(
+      r => r.event_id === eventId && ['confirmed', 'checked_in'].includes(r.status)
+    );
+    let issued = 0, skipped = 0;
+    for (const reg of regs) {
+      const result = this.issueParticipationCertificate(reg, adminUserId);
+      if (result.message === 'Participation certificate issued successfully.') issued++;
+      else skipped++;
+    }
+    // Mark event as cert_available
+    this.updateEvent(eventId, { cert_available: true });
+    return { issued, skipped };
+  }
+
+  /** Toggle participation certificate availability for an event (admin) */
+  public setEventCertAvailability(eventId: string, available: boolean): void {
+    this.updateEvent(eventId, { cert_available: available });
+  }
+
+  /** Revoke a certificate; records reason and admin */
+  public revokeCertificate(
+    certId: string,
+    adminUserId: string,
+    reason: string
+  ): { success: boolean; message: string } {
+    const cert = this.getCertificateById(certId);
+    if (!cert) return { success: false, message: 'Certificate not found.' };
+    this.updateCertificate(cert.id, {
+      status: 'revoked',
+      revoke_reason: reason,
+      assigned_by: adminUserId,
+      updated_at: new Date().toISOString(),
+    });
+    return { success: true, message: 'Certificate revoked.' };
+  }
+
+  /** Verify a certificate by its unique certificate_id. Returns public info only. */
+  public verifyCertificate(certId: string): {
+    valid: boolean;
+    status?: string;
+    participant_name?: string;
+    event_name?: string;
+    certificate_type?: string;
+    winner_position?: string;
+    issue_date?: string;
+    certificate_id?: string;
+    message?: string;
+  } {
+    const cert = this.getCertificates().find(c => c.certificate_id === certId);
+    if (!cert) return { valid: false, message: 'Certificate ID not found in records.' };
+    if (cert.status === 'revoked') {
+      return {
+        valid: false,
+        status: 'revoked',
+        certificate_id: cert.certificate_id,
+        participant_name: cert.participant_name,
+        event_name: cert.event_name,
+        certificate_type: cert.certificate_type,
+        issue_date: cert.issue_date,
+        message: 'This certificate has been revoked and is no longer valid.'
+      };
+    }
+    return {
+      valid: true,
+      status: cert.status || 'issued',
+      certificate_id: cert.certificate_id,
+      participant_name: cert.participant_name,
+      event_name: cert.event_name,
+      certificate_type: cert.certificate_type,
+      winner_position: cert.winner_position,
+      issue_date: cert.issue_date,
+      message: 'Certificate is valid and officially issued by COLORIDO 2K26.'
+    };
+  }
+
+  // --- WINNER ASSIGNMENTS ---
+  public getWinnerAssignments(): WinnerAssignment[] {
+    return this.load<WinnerAssignment[]>(STORAGE_KEYS.WINNER_ASSIGNMENTS, []);
+  }
+
+  public getWinnerAssignmentsByEvent(eventId: string): WinnerAssignment[] {
+    return this.getWinnerAssignments().filter(a => a.event_id === eventId);
+  }
+
+  /** Save a winner assignment (draft, unconfirmed). Admin can correct before confirming. */
+  public saveWinnerAssignment(assignment: WinnerAssignment): void {
+    const list = this.getWinnerAssignments();
+    const idx = list.findIndex(a => a.id === assignment.id);
+    if (idx >= 0) {
+      list[idx] = assignment;
+    } else {
+      list.unshift(assignment);
+    }
+    this.save(STORAGE_KEYS.WINNER_ASSIGNMENTS, list);
+  }
+
+  /** Remove a winner assignment (before confirmation) */
+  public removeWinnerAssignment(id: string): void {
+    const list = this.getWinnerAssignments().filter(a => a.id !== id);
+    this.save(STORAGE_KEYS.WINNER_ASSIGNMENTS, list);
+  }
+
+  /** Confirm winner assignments and issue winner certificates for an event.
+   *  Only admins should call this. Prevents duplicate position certs per event. */
+  public confirmWinnerAssignments(
+    eventId: string,
+    adminUserId: string
+  ): { success: boolean; issued: number; message: string } {
+    const assignments = this.getWinnerAssignments().filter(
+      a => a.event_id === eventId && !a.confirmed
+    );
+    if (assignments.length === 0) {
+      return { success: false, issued: 0, message: 'No pending winner assignments for this event.' };
+    }
+
+    const event = this.getEventById(eventId);
+    let issued = 0;
+    const updatedAssignments = this.getWinnerAssignments();
+
+    for (const assignment of assignments) {
+      // Check if a non-revoked winner cert already exists for this reg+event+position
+      const allCerts = this.getCertificates();
+      const existingWinner = allCerts.find(
+        c => c.event_id === eventId &&
+             c.winner_position === assignment.position &&
+             c.status !== 'revoked'
+      );
+      if (existingWinner) continue; // Skip — position already awarded
+
+      const certType: CertificateItem['certificate_type'] =
+        assignment.position === '1st Place' ? 'Winner Certificate' :
+        assignment.position === '2nd Place' ? 'Runner-up Certificate' :
+        'Special Recognition';
+
+      const achievementLabel =
+        assignment.position === '1st Place' ? '🥇 First Place — Gold Award' :
+        assignment.position === '2nd Place' ? '🥈 Second Place — Silver Award' :
+        '🥉 Third Place — Bronze Award';
+
+      const certId = `CERT-COL26-W${Date.now().toString(36).toUpperCase().slice(-6)}-${assignment.position.charAt(0)}`;
+      const hash = `SHA256-COL26-WIN-${eventId}-${assignment.position.replace(/\s/g, '')}-${Date.now().toString(36).toUpperCase()}`;
+
+      const cert: CertificateItem = {
+        id: `cert_win_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        certificate_id: certId,
+        registration_id: assignment.registration_id,
+        event_id: eventId,
+        event_name: event?.event_name || assignment.event_name,
+        user_id: assignment.user_id,
+        participant_name: assignment.participant_name,
+        college: assignment.college,
+        certificate_type: certType,
+        achievement: achievementLabel,
+        issue_date: new Date().toISOString().split('T')[0],
+        authorized_signatory_1: 'Dr. Arvind Sharma (Festival Convener)',
+        authorized_signatory_2: 'Prof. Sunita Rao (Dean Student Affairs)',
+        verification_hash: hash,
+        status: 'issued',
+        winner_position: assignment.position,
+        assigned_by: adminUserId,
+        updated_at: new Date().toISOString(),
+      };
+
+      this.addCertificate(cert);
+
+      // Mark assignment as confirmed
+      const idx = updatedAssignments.findIndex(a => a.id === assignment.id);
+      if (idx >= 0) {
+        updatedAssignments[idx] = { ...updatedAssignments[idx], confirmed: true, certificate_id: certId };
+      }
+      issued++;
+    }
+
+    this.save(STORAGE_KEYS.WINNER_ASSIGNMENTS, updatedAssignments);
+    return { success: true, issued, message: `${issued} winner certificate(s) issued successfully.` };
+  }
+
   private generateCertificateForResult(result: ResultItem): void {
-    const certType = result.position === '1st Place' 
-      ? 'Winner Certificate' 
-      : result.position === '2nd Place' 
-      ? 'Runner-up Certificate' 
+    const certType: CertificateItem['certificate_type'] = result.position === '1st Place'
+      ? 'Winner Certificate'
+      : result.position === '2nd Place'
+      ? 'Runner-up Certificate'
       : 'Special Recognition';
+
+    const winnerPos: WinnerPosition | undefined =
+      result.position === '1st Place' ? '1st Place' :
+      result.position === '2nd Place' ? '2nd Place' :
+      result.position === '3rd Place' ? '3rd Place' :
+      undefined;
 
     const newCert: CertificateItem = {
       id: `cert_${Date.now()}`,
@@ -472,7 +746,9 @@ class ColoridoStore {
       issue_date: new Date().toISOString().split('T')[0],
       authorized_signatory_1: 'Dr. Arvind Sharma (Festival Convener)',
       authorized_signatory_2: 'Prof. Sunita Rao (Dean Student Affairs)',
-      verification_hash: `SHA256-COL26-${result.event_id}-${Date.now().toString(36).toUpperCase()}`
+      verification_hash: `SHA256-COL26-${result.event_id}-${Date.now().toString(36).toUpperCase()}`,
+      status: 'issued',
+      winner_position: winnerPos,
     };
 
     this.addCertificate(newCert);
@@ -624,22 +900,26 @@ class ColoridoStore {
 
   // --- HARD RESET / SEED RESTORE ---
   public resetToDefaultSeed(): void {
-    localStorage.removeItem(STORAGE_KEYS.EVENTS);
-    localStorage.removeItem(STORAGE_KEYS.VENUES);
-    localStorage.removeItem(STORAGE_KEYS.SCHEDULES);
-    localStorage.removeItem(STORAGE_KEYS.ANNOUNCEMENTS);
-    localStorage.removeItem(STORAGE_KEYS.RESULTS);
-    localStorage.removeItem(STORAGE_KEYS.LEADERBOARD);
-    localStorage.removeItem(STORAGE_KEYS.SPONSORS);
-    localStorage.removeItem(STORAGE_KEYS.GALLERY);
-    localStorage.removeItem(STORAGE_KEYS.REGISTRATIONS);
-    localStorage.removeItem(STORAGE_KEYS.PARTICIPANTS);
-    localStorage.removeItem(STORAGE_KEYS.NOTIFICATIONS);
-    localStorage.removeItem(STORAGE_KEYS.CERTIFICATES);
-    localStorage.removeItem(STORAGE_KEYS.CHECKINS);
-    localStorage.removeItem(STORAGE_KEYS.MESSAGES);
-    localStorage.removeItem(STORAGE_KEYS.FAVORITES);
-    localStorage.removeItem(STORAGE_KEYS.SCORING_CONFIG);
+    this.memoryCache.clear();
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEYS.EVENTS);
+      localStorage.removeItem(STORAGE_KEYS.VENUES);
+      localStorage.removeItem(STORAGE_KEYS.SCHEDULES);
+      localStorage.removeItem(STORAGE_KEYS.ANNOUNCEMENTS);
+      localStorage.removeItem(STORAGE_KEYS.RESULTS);
+      localStorage.removeItem(STORAGE_KEYS.LEADERBOARD);
+      localStorage.removeItem(STORAGE_KEYS.SPONSORS);
+      localStorage.removeItem(STORAGE_KEYS.GALLERY);
+      localStorage.removeItem(STORAGE_KEYS.REGISTRATIONS);
+      localStorage.removeItem(STORAGE_KEYS.PARTICIPANTS);
+      localStorage.removeItem(STORAGE_KEYS.NOTIFICATIONS);
+      localStorage.removeItem(STORAGE_KEYS.CERTIFICATES);
+      localStorage.removeItem(STORAGE_KEYS.CHECKINS);
+      localStorage.removeItem(STORAGE_KEYS.MESSAGES);
+      localStorage.removeItem(STORAGE_KEYS.FAVORITES);
+      localStorage.removeItem(STORAGE_KEYS.SCORING_CONFIG);
+      localStorage.removeItem(STORAGE_KEYS.WINNER_ASSIGNMENTS);
+    }
     this.notify();
   }
 }

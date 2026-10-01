@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { X, Printer, Download, Award, Sparkles, CheckCircle2 } from 'lucide-react';
 import { CertificateItem } from '../../types/database';
 import { useToast } from '../../context/ToastContext';
+import { downloadCertificatePDF, buildCertFilename } from '../../lib/certificatePdf';
 
 interface Props {
   certificate: CertificateItem;
@@ -13,6 +14,7 @@ interface Props {
 export const CertificateModal: React.FC<Props> = ({ certificate, isOpen, onClose }) => {
   const { showToast } = useToast();
   const certRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
 
   if (!isOpen) return null;
 
@@ -20,129 +22,26 @@ export const CertificateModal: React.FC<Props> = ({ certificate, isOpen, onClose
     window.print();
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    if (downloading) return;
+    setDownloading(true);
+    showToast('Generating PDF certificate...', 'info');
     try {
-      const canvas = document.createElement('canvas');
-      canvas.width = 1200;
-      canvas.height = 850;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        window.print();
-        return;
-      }
-
-      // Background
-      ctx.fillStyle = '#FCFCFA';
-      ctx.fillRect(0, 0, 1200, 850);
-
-      // Gold Outer Border
-      ctx.strokeStyle = '#D97706';
-      ctx.lineWidth = 16;
-      ctx.strokeRect(20, 20, 1160, 810);
-
-      // Gold Inner Border
-      ctx.strokeStyle = '#B45309';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(40, 40, 1120, 770);
-
-      // Header Text
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#0F172A';
-      ctx.font = 'bold 38px sans-serif';
-      ctx.fillText('COLORIDO 2K26', 600, 110);
-
-      ctx.fillStyle = '#92400E';
-      ctx.font = 'bold 15px sans-serif';
-      ctx.fillText('NATIONAL LEVEL CULTURAL & SPORTS FESTIVAL', 600, 145);
-
-      // Divider Line
-      ctx.strokeStyle = '#D97706';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(400, 175);
-      ctx.lineTo(800, 175);
-      ctx.stroke();
-
-      // Certificate Type
-      ctx.fillStyle = '#78350F';
-      ctx.font = 'italic bold 32px serif';
-      ctx.fillText(certificate.certificate_type, 600, 230);
-
-      ctx.fillStyle = '#64748B';
-      ctx.font = 'bold 14px sans-serif';
-      ctx.fillText('THIS IS TO PROUDLY CERTIFY THAT', 600, 280);
-
-      // Participant Name
-      ctx.fillStyle = '#0F172A';
-      ctx.font = 'bold 44px serif';
-      ctx.fillText(certificate.participant_name, 600, 350);
-
-      // College
-      ctx.fillStyle = '#475569';
-      ctx.font = 'bold 20px sans-serif';
-      ctx.fillText(`of ${certificate.college}`, 600, 400);
-
-      // Description / Achievement
-      ctx.fillStyle = '#334155';
-      ctx.font = '18px sans-serif';
-      ctx.fillText('has exhibited exceptional skill, dedication, and sportsmanship in', 600, 460);
-      ctx.fillText(`the discipline of ${certificate.event_name}, achieving ${certificate.achievement}`, 600, 495);
-      ctx.fillText('during COLORIDO 2K26 held at the University Campus.', 600, 530);
-
-      // Footer divider
-      ctx.strokeStyle = '#CBD5E1';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(100, 620);
-      ctx.lineTo(1100, 620);
-      ctx.stroke();
-
-      // Signatures & Details
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#1E1B4B';
-      ctx.font = 'bold italic 22px serif';
-      ctx.fillText('Dr. Arvind Sharma', 120, 680);
-      ctx.fillStyle = '#64748B';
-      ctx.font = '14px sans-serif';
-      ctx.fillText('Festival Convener', 120, 710);
-
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#1E1B4B';
-      ctx.font = 'bold italic 22px serif';
-      ctx.fillText('Prof. Sunita Rao', 1080, 680);
-      ctx.fillStyle = '#64748B';
-      ctx.font = '14px sans-serif';
-      ctx.fillText('Dean of Student Affairs', 1080, 710);
-
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#94A3B8';
-      ctx.font = 'bold 12px monospace';
-      ctx.fillText(`VERIFIED ID: ${certificate.certificate_id}  |  ISSUE DATE: ${certificate.issue_date}`, 600, 770);
-
-      // Trigger download
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          window.print();
-          return;
-        }
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `COLORIDO_2K26_CERTIFICATE_${certificate.certificate_id}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        showToast(`Certificate saved to downloads: COLORIDO_2K26_CERTIFICATE_${certificate.certificate_id}.png`, 'success');
-      }, 'image/png');
-
+      // Small timeout to let the toast appear
+      await new Promise(resolve => setTimeout(resolve, 100));
+      downloadCertificatePDF(certificate);
+      const filename = buildCertFilename(certificate);
+      showToast(`Certificate downloaded: ${filename}`, 'success');
     } catch (err) {
-      showToast('Opening print dialog...', 'info');
+      console.error('PDF generation failed:', err);
+      showToast('PDF generation failed. Opening print dialog as fallback...', 'error');
       window.print();
+    } finally {
+      setDownloading(false);
     }
   };
 
-  const isWinner = certificate.certificate_type.includes('Winner');
+  const isWinner = certificate.certificate_type.includes('Winner') || certificate.certificate_type.includes('Runner');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -273,14 +172,18 @@ export const CertificateModal: React.FC<Props> = ({ certificate, isOpen, onClose
               className="flex items-center space-x-2 py-2 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-colors"
             >
               <Printer className="w-4 h-4" />
-              <span>Print Official Certificate</span>
+              <span>Print</span>
             </button>
             <button
               onClick={handleDownload}
-              className="flex items-center space-x-2 py-2 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-xs font-bold shadow-lg transition-all"
+              disabled={downloading}
+              className="flex items-center space-x-2 py-2 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-xs font-bold shadow-lg transition-all disabled:opacity-60"
             >
-              <Download className="w-4 h-4" />
-              <span>Download PDF</span>
+              {downloading
+                ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                : <Download className="w-4 h-4" />
+              }
+              <span>{downloading ? 'Generating PDF…' : 'Download PDF'}</span>
             </button>
             <button
               onClick={onClose}

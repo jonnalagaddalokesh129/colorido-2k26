@@ -13,7 +13,8 @@ import {
   ChevronRight,
   Sparkles,
   Clock,
-  BarChart3
+  BarChart3,
+  Award
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { store } from '../../lib/store';
@@ -91,6 +92,15 @@ const PERMISSIONS = [
     label: 'Sponsors & Inquiries',
     tab: '',
     desc: 'Sponsor tiers and contact inquiries inbox — Admin only.',
+    allowed: false,
+    color: 'from-slate-500 to-slate-600',
+    bg: 'bg-slate-800/60 border-slate-700/40'
+  },
+  {
+    icon: Award,
+    label: 'Certificate Issuance & Winners',
+    tab: '',
+    desc: 'Assigning winners and publishing official certificates — Admin only.',
     allowed: false,
     color: 'from-slate-500 to-slate-600',
     bg: 'bg-slate-800/60 border-slate-700/40'

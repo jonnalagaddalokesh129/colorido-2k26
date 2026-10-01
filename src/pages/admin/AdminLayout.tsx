@@ -13,7 +13,8 @@ import {
   ArrowLeft, 
   Settings,
   Sliders,
-  LogOut
+  LogOut,
+  Award
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -41,6 +42,7 @@ export const AdminLayout: React.FC<Props> = ({
     { id: 'coordinators',  label: 'Coordinators',          icon: ShieldCheck,   adminOnly: true  },
     { id: 'checkin',       label: 'QR Gate Check-In',      icon: QrCode,        adminOnly: false },
     { id: 'results',       label: 'Results & Scoring',     icon: Trophy,        adminOnly: false },
+    { id: 'certificates',  label: 'Certificates',          icon: Award,         adminOnly: true  },
     { id: 'announcements', label: 'Announcements',         icon: Bell,          adminOnly: false },
     { id: 'gallery',       label: 'Gallery Media',         icon: Image,         adminOnly: false },
     { id: 'sponsors',      label: 'Sponsors & Tiers',      icon: HeartHandshake,adminOnly: true  },

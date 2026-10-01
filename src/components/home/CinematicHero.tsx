@@ -125,6 +125,16 @@ export const CinematicHero: React.FC<Props> = ({ onNavigate }) => {
       <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#7C3AED]/20 blur-[100px] rounded-full pointer-events-none" />
       <div className="absolute top-10 right-10 w-80 h-80 bg-[#FF1493]/15 blur-[100px] rounded-full pointer-events-none" />
 
+      {/* ── Layer 2.5: Oversized 3D COLORIDO Background Typography ── */}
+      <div 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl pointer-events-none select-none z-10 overflow-hidden flex items-center justify-center px-4"
+        aria-hidden="true"
+      >
+        <div className="hero-3d-colorido-text text-center">
+          COLORIDO
+        </div>
+      </div>
+
       {/* ── Layer 3: Neon Glowing Orbital Rings Simulation ── */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[850px] lg:w-[1050px] h-[260px] sm:h-[340px] lg:h-[420px] pointer-events-none opacity-30 sm:opacity-40">
         <div className="w-full h-full rounded-[50%] border border-[#FF1493] shadow-[0_0_30px_#FF1493] animate-orbit" style={{ transform: 'rotate(-12deg)' }} />
@@ -142,13 +152,13 @@ export const CinematicHero: React.FC<Props> = ({ onNavigate }) => {
       </div>
 
       {/* ── Layer 5: Hero Content & Interactive Carousel ── */}
-      <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 space-y-6 sm:space-y-8">
+      <div className="relative z-20 max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-8 md:pt-14 pb-8 sm:pb-12 md:pb-16 space-y-3.5 sm:space-y-5 md:space-y-7">
         
         {/* Top Floating Badge */}
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#10051D]/80 border border-[#FF1493]/35 text-xs font-bold text-[#F5F0FF] shadow-[0_0_20px_rgba(255,20,147,0.25)] backdrop-blur-xl">
-          <Sparkles className="w-4 h-4 text-[#FF1493] animate-pulse" />
-          <span className="text-[#FF2B9A]">{slide.taglineBadge}</span>
-          <span className="text-[#B9A9D6]/40">•</span>
+        <div className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#10051D]/85 border border-[#FF1493]/35 text-[10px] sm:text-xs font-bold text-[#F5F0FF] shadow-[0_0_20px_rgba(255,20,147,0.25)] backdrop-blur-xl">
+          <Sparkles className="w-3.5 h-3.5 text-[#FF1493] animate-pulse flex-shrink-0" />
+          <span className="text-[#FF2B9A] truncate">{slide.taglineBadge}</span>
+          <span className="text-[#B9A9D6]/40 hidden sm:inline">•</span>
           <span className="text-[#D8B4FE] font-medium hidden sm:inline">Oct 15 - 17, 2026</span>
         </div>
 
@@ -156,23 +166,23 @@ export const CinematicHero: React.FC<Props> = ({ onNavigate }) => {
         <AnimatePresence mode="wait">
           <motion.div
             key={slide.id}
-            initial={{ opacity: 0, y: 25, scale: 0.98 }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -25, scale: 0.98 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-4"
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-2.5 sm:space-y-4"
           >
             {/* Prominent GRAND FINALE Identifier */}
             {slide.id === 'colorido' && (
-              <div className="font-display font-black tracking-[0.25em] text-xs sm:text-lg md:text-xl text-[#FF2B9A] uppercase mb-1 drop-shadow-[0_0_15px_rgba(255,20,147,0.6)] flex items-center justify-center space-x-2">
-                <span className="w-8 h-[2px] bg-gradient-to-r from-transparent to-[#FF1493]" />
+              <div className="font-display font-black tracking-[0.2em] sm:tracking-[0.25em] text-[10px] sm:text-base md:text-lg text-[#FF2B9A] uppercase mb-0.5 sm:mb-1 drop-shadow-[0_0_15px_rgba(255,20,147,0.6)] flex items-center justify-center space-x-2">
+                <span className="w-6 sm:w-8 h-[2px] bg-gradient-to-r from-transparent to-[#FF1493]" />
                 <span>GRAND FINALE</span>
-                <span className="w-8 h-[2px] bg-gradient-to-l from-transparent to-[#FF1493]" />
+                <span className="w-6 sm:w-8 h-[2px] bg-gradient-to-l from-transparent to-[#FF1493]" />
               </div>
             )}
 
             {/* Cinematic 3D Glowing Headline */}
-            <h1 className="font-display font-black text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight leading-none drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]">
+            <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-9xl tracking-tight leading-none drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]">
               <span className="text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
                 {slide.titleTop}
               </span>{' '}
@@ -189,21 +199,21 @@ export const CinematicHero: React.FC<Props> = ({ onNavigate }) => {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-lg sm:text-2xl md:text-3xl font-extrabold uppercase tracking-widest text-[#D8B4FE] drop-shadow-[0_0_15px_rgba(216,180,254,0.4)]">
+            <p className="text-base sm:text-xl md:text-2xl lg:text-3xl font-extrabold uppercase tracking-wider sm:tracking-widest text-[#D8B4FE] drop-shadow-[0_0_15px_rgba(216,180,254,0.4)]">
               {slide.subtitle}
             </p>
 
             {/* Short Supporting Line */}
-            <p className="text-xs sm:text-base md:text-lg text-[#B9A9D6] max-w-2xl mx-auto leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm md:text-base text-[#B9A9D6] max-w-xl mx-auto leading-relaxed font-normal px-2">
               {slide.description}
             </p>
 
             {/* Key feature pills for this slide */}
-            <div className="flex flex-wrap justify-center gap-2 pt-2">
+            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 pt-1">
               {slide.categoryPills.map((pill) => (
                 <span 
                   key={pill}
-                  className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#24104F]/60 border border-[rgba(216,180,254,0.2)] text-[#F5F0FF] backdrop-blur-md shadow-xs"
+                  className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-semibold bg-[#24104F]/60 border border-[rgba(216,180,254,0.2)] text-[#F5F0FF] backdrop-blur-md shadow-xs"
                 >
                   {pill}
                 </span>
@@ -213,56 +223,58 @@ export const CinematicHero: React.FC<Props> = ({ onNavigate }) => {
         </AnimatePresence>
 
         {/* Key Event Badges: Date, Location, Deadline */}
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-6 text-xs text-[#F5F0FF] pt-2">
-          <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-[#10051D]/75 border border-[rgba(216,180,254,0.18)] shadow-md backdrop-blur-md">
-            <Calendar className="w-4 h-4 text-[#FF1493]" />
-            <span className="font-semibold">Oct 15 - 17, 2026</span>
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-[#F5F0FF] pt-1">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#10051D]/80 border border-[rgba(216,180,254,0.18)] shadow-md backdrop-blur-md">
+            <Calendar className="w-3.5 h-3.5 text-[#FF1493] flex-shrink-0" />
+            <span className="font-semibold whitespace-nowrap">Oct 15 - 17, 2026</span>
           </div>
-          <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-[#10051D]/75 border border-[rgba(216,180,254,0.18)] shadow-md backdrop-blur-md">
-            <MapPin className="w-4 h-4 text-[#7C3AED]" />
-            <span className="font-semibold">Central University Campus Enclave</span>
+          <div className="flex items-center space-x-1.5 sm:space-x-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#10051D]/80 border border-[rgba(216,180,254,0.18)] shadow-md backdrop-blur-md">
+            <MapPin className="w-3.5 h-3.5 text-[#7C3AED] flex-shrink-0" />
+            <span className="font-semibold whitespace-nowrap">Central University Campus</span>
           </div>
-          <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-[#10051D]/75 border border-[rgba(216,180,254,0.18)] shadow-md backdrop-blur-md">
-            <Clock className="w-4 h-4 text-[#FF2B9A]" />
-            <span className="font-semibold">Registration Deadline: Oct 14, 2026</span>
+          <div className="flex items-center space-x-1.5 sm:space-x-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#10051D]/80 border border-[rgba(216,180,254,0.18)] shadow-md backdrop-blur-md">
+            <Clock className="w-3.5 h-3.5 text-[#FF2B9A] flex-shrink-0" />
+            <span className="font-semibold whitespace-nowrap">Deadline: Oct 14, 2026</span>
           </div>
         </div>
 
         {/* Live Countdown Timer */}
-        <div className="pt-2">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#B9A9D6] mb-3">
+        <div className="pt-1 sm:pt-2">
+          <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#B9A9D6] mb-2 sm:mb-3">
             Championship Commences In
           </p>
           <CountdownTimer targetDate="2026-10-15T09:00:00" />
         </div>
 
-        {/* ── Prominent Call To Action Buttons ── */}
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-          {/* Primary CTA: Dragon Fruit Gradient with Bright Glow */}
+        {/* ── Call To Action Buttons (Mobile-first Responsive Cluster) ── */}
+        <div className="pt-2 sm:pt-4 max-w-lg mx-auto w-full space-y-2 sm:space-y-3 px-2 sm:px-0">
+          {/* Primary CTA: Full width on mobile, centered pill on desktop */}
           <button
             onClick={() => onNavigate('/register')}
-            className="btn-primary-neon px-8 py-4 rounded-2xl text-sm sm:text-base font-extrabold shadow-[0_0_35px_rgba(255,20,147,0.45)] hover:shadow-[0_0_55px_rgba(255,43,154,0.7)] flex items-center space-x-2.5 transition-all duration-300 hover:scale-105 active:scale-98"
+            className="btn-primary-neon w-full sm:w-auto px-7 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm md:text-base font-extrabold shadow-[0_0_25px_rgba(255,20,147,0.4)] hover:shadow-[0_0_40px_rgba(255,43,154,0.65)] flex items-center justify-center space-x-2 transition-all duration-300 hover:scale-102 active:scale-98 mx-auto"
           >
             <span>REGISTER NOW</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 text-white" />
           </button>
 
-          {/* Secondary CTA: Transparent Glass / Purple Border */}
-          <button
-            onClick={() => onNavigate('/events')}
-            className="btn-secondary-neon px-7 py-4 rounded-2xl text-sm sm:text-base font-bold transition-all duration-300 hover:scale-105 active:scale-98 flex items-center space-x-2"
-          >
-            <span>EXPLORE EVENTS</span>
-            <Compass className="w-4 h-4 text-[#D8B4FE]" />
-          </button>
+          {/* Secondary CTAs: 2-column grid on mobile, flex row on tablet/desktop */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full sm:flex sm:justify-center">
+            <button
+              onClick={() => onNavigate('/events')}
+              className="btn-secondary-neon px-3 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 hover:scale-102 active:scale-98 flex items-center justify-center space-x-1.5"
+            >
+              <Compass className="w-3.5 h-3.5 text-[#D8B4FE] flex-shrink-0" />
+              <span>Explore Events</span>
+            </button>
 
-          {/* Secondary Action: Schedule */}
-          <button
-            onClick={() => onNavigate('/schedule')}
-            className="px-6 py-4 rounded-2xl bg-[#10051D]/60 hover:bg-[#10051D] border border-[rgba(216,180,254,0.2)] text-[#D8B4FE] hover:text-white font-semibold text-sm transition-all"
-          >
-            <span>View Schedule</span>
-          </button>
+            <button
+              onClick={() => onNavigate('/schedule')}
+              className="px-3 py-2.5 sm:px-5 sm:py-3 rounded-xl bg-[#10051D]/80 hover:bg-[#10051D] border border-[rgba(216,180,254,0.22)] hover:border-[#FF1493]/50 text-[#D8B4FE] hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-1.5 active:scale-98"
+            >
+              <Calendar className="w-3.5 h-3.5 text-[#FF2B9A] flex-shrink-0" />
+              <span>View Schedule</span>
+            </button>
+          </div>
         </div>
 
         {/* ── Subtle Pagination Indicators & Slide Nav ── */}

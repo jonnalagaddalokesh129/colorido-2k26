@@ -30,6 +30,8 @@ export interface EventItem {
   coordinator_contact: string;
   coordinator_email?: string;
   created_at?: string;
+  /** Admin-controlled flag: whether participation certificates are available for download */
+  cert_available?: boolean;
 }
 
 export interface ScheduleItem {
@@ -215,12 +217,16 @@ export interface CheckinRecord {
   notes?: string;
 }
 
+export type CertificateStatus = 'pending' | 'issued' | 'revoked';
+export type WinnerPosition = '1st Place' | '2nd Place' | '3rd Place';
+
 export interface CertificateItem {
   id: string;
   certificate_id: string;
   registration_id?: string;
   event_id: string;
   event_name: string;
+  user_id?: string;
   participant_name: string;
   college: string;
   certificate_type: 'Participation Certificate' | 'Winner Certificate' | 'Runner-up Certificate' | 'Special Recognition';
@@ -229,6 +235,32 @@ export interface CertificateItem {
   authorized_signatory_1: string;
   authorized_signatory_2: string;
   verification_hash: string;
+  /** Lifecycle status of certificate */
+  status?: CertificateStatus;
+  /** For winner certificates only */
+  winner_position?: WinnerPosition;
+  /** Admin user_id who assigned/issued this certificate */
+  assigned_by?: string;
+  /** Timestamp of last status change */
+  updated_at?: string;
+  /** Revocation reason if revoked */
+  revoke_reason?: string;
+}
+
+/** Represents a winner assignment before certificate issuance */
+export interface WinnerAssignment {
+  id: string;
+  event_id: string;
+  event_name: string;
+  registration_id: string;
+  user_id?: string;
+  participant_name: string;
+  college: string;
+  position: WinnerPosition;
+  assigned_by: string;
+  assigned_at: string;
+  confirmed: boolean;
+  certificate_id?: string;
 }
 
 export interface ContactMessage {

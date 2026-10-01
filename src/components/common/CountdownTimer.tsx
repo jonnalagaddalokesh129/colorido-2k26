@@ -25,12 +25,11 @@ const CountdownCard: React.FC<ItemProps> = ({ label, value }) => {
 
   return (
     <div 
-      className="p-3 sm:p-5 text-center relative overflow-hidden transition-all duration-300 hover:border-[#FF1493]/60 group"
+      className="p-2 sm:p-3.5 md:p-5 text-center relative overflow-hidden transition-all duration-300 hover:border-[#FF1493]/60 group rounded-xl sm:rounded-2xl"
       style={{
         background: 'rgba(10, 4, 25, 0.88)',
         border: '1px solid rgba(216, 180, 254, 0.35)',
-        boxShadow: '0 12px 40px rgba(91, 33, 245, 0.18)',
-        borderRadius: '18px',
+        boxShadow: '0 8px 30px rgba(91, 33, 245, 0.18)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)'
       }}
@@ -38,27 +37,27 @@ const CountdownCard: React.FC<ItemProps> = ({ label, value }) => {
       {/* Subtle top gloss reflection */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D8B4FE]/30 to-transparent pointer-events-none" />
 
-      {/* High-Contrast Large Number (#7C3AED with subtle Dragon Fruit glow) */}
+      {/* High-Contrast Prominent Number */}
       <motion.span 
         animate={animating ? { scale: [1.0, 1.08, 1.0] } : { scale: 1.0 }}
         transition={{ duration: 0.38, ease: 'easeInOut' }}
-        className="font-display font-black text-3xl sm:text-5xl lg:text-6xl block select-none"
+        className="font-display font-black text-2xl sm:text-4xl md:text-5xl lg:text-6xl block select-none"
         style={{
-          color: '#7C3AED',
-          textShadow: '0 0 18px rgba(124, 58, 237, 0.4), 0 0 35px rgba(255, 20, 147, 0.25)',
-          lineHeight: 1.1
+          color: '#F5F0FF',
+          textShadow: '0 0 16px rgba(124, 58, 237, 0.5), 0 0 30px rgba(255, 20, 147, 0.3)',
+          lineHeight: 1.05
         }}
       >
         {String(value).padStart(2, '0')}
       </motion.span>
 
-      {/* High-Contrast Dragon Fruit Label (#FF1493) */}
+      {/* High-Contrast Dragon Fruit Label (#FF2B9A) */}
       <span 
-        className="text-[10px] sm:text-xs font-bold block mt-1.5 uppercase select-none tracking-wider"
+        className="text-[8px] sm:text-[10px] md:text-xs font-extrabold block mt-1 uppercase select-none tracking-wider"
         style={{
-          color: '#FF1493',
+          color: '#FF2B9A',
           letterSpacing: '0.08em',
-          textShadow: '0 0 10px rgba(255, 20, 147, 0.4)'
+          textShadow: '0 0 8px rgba(255, 20, 147, 0.4)'
         }}
       >
         {label}
@@ -102,7 +101,7 @@ export const CountdownTimer: React.FC<Props> = ({
   }, [targetDate]);
 
   return (
-    <div className="grid grid-cols-4 gap-2.5 sm:gap-4 max-w-xl mx-auto px-2">
+    <div className="grid grid-cols-4 gap-1.5 sm:gap-3 md:gap-4 max-w-sm sm:max-w-md md:max-w-xl mx-auto px-1 sm:px-2">
       <CountdownCard label="DAYS" value={timeLeft.days} />
       <CountdownCard label="HOURS" value={timeLeft.hours} />
       <CountdownCard label="MINUTES" value={timeLeft.minutes} />

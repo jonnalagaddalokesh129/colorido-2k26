@@ -46,6 +46,8 @@ import { AdminAnnouncementsPage } from './pages/admin/AdminAnnouncementsPage';
 import { AdminGalleryPage }       from './pages/admin/AdminGalleryPage';
 import { AdminSponsorsPage }      from './pages/admin/AdminSponsorsPage';
 import { AdminMessagesPage }      from './pages/admin/AdminMessagesPage';
+import { AdminCertificatesPage }  from './pages/admin/AdminCertificatesPage';
+import { CertificateVerifyPage }  from './pages/CertificateVerifyPage';
 
 /* ── Coordinator Pages ── */
 import { CoordinatorLayout }      from './pages/coordinator/CoordinatorLayout';
@@ -206,6 +208,14 @@ function renderPublicPage(path: string, navigate: (to: string) => void): React.R
   /* ── Redirect /image-effects to Gallery ── */
   if (path === '/image-effects') return <GalleryPage />;
 
+  /* ── Certificate Verification (public) ── */
+  if (path === '/verify' || path.startsWith('/verify/')) {
+    const rawId = path.startsWith('/verify/') ? path.replace('/verify/', '') : '';
+    const params = path.includes('?') ? new URLSearchParams(path.split('?')[1]) : new URLSearchParams();
+    const certId = rawId || params.get('id') || '';
+    return <CertificateVerifyPage initialCertId={certId} onNavigate={navigate} />;
+  }
+
   /* ── Coordinator Pending ── */
   if (path === '/coordinator-pending') return <CoordinatorPendingPage onNavigate={navigate} />;
 
@@ -341,11 +351,12 @@ function AppShell() {
             {adminTab === 'coordinators'  && <AdminCoordinatorsPage />}
             {adminTab === 'checkin'       && <AdminCheckinPage      />}
             {adminTab === 'results'       && <AdminResultsPage      />}
+            {adminTab === 'certificates'  && <AdminCertificatesPage />}
             {adminTab === 'announcements' && <AdminAnnouncementsPage />}
             {adminTab === 'gallery'       && <AdminGalleryPage      />}
             {adminTab === 'sponsors'      && <AdminSponsorsPage     />}
             {adminTab === 'messages'      && <AdminMessagesPage     />}
-            {!['dashboard','events','participants','coordinators','checkin','results','announcements','gallery','sponsors','messages'].includes(adminTab) && (
+            {!['dashboard','events','participants','coordinators','checkin','results','certificates','announcements','gallery','sponsors','messages'].includes(adminTab) && (
               <AdminDashboardPage onSelectTab={setAdminTab} />
             )}
           </AdminLayout>

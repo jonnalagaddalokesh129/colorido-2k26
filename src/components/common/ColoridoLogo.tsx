@@ -34,7 +34,7 @@ export const ColoridoLogo: React.FC<Props> = ({
         style={{
           height: getHeight(),
           width: 'auto',
-          maxWidth: 'clamp(140px, 18vw, 220px)',
+          maxWidth: size === 'sm' ? 'clamp(110px, 30vw, 175px)' : 'clamp(140px, 18vw, 220px)',
           objectFit: 'contain',
           display: 'block',
           filter: 'drop-shadow(0 0 12px rgba(255, 20, 147, 0.45)) drop-shadow(0 0 24px rgba(91, 33, 245, 0.35))'

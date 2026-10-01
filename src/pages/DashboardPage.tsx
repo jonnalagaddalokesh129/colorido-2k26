@@ -57,8 +57,15 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate, onViewEvent }) => {
 
         const userRegs = store.getRegistrationsByUser(uId);
         setRegistrations(userRegs);
-        setCertificates(store.getCertificatesForUser(uName || uCollege));
-        setResults(store.getResults().filter(r => 
+
+        // Try user_id lookup first (proper auth), then name fallback for demo certs
+        const byId = store.getCertificatesByUserId(uId);
+        const certs = byId.length > 0
+          ? byId
+          : store.getCertificatesForUser(uName || uCollege);
+        setCertificates(certs);
+
+        setResults(store.getResults().filter(r =>
           (uName && r.participant_name.toLowerCase().includes(uName.toLowerCase())) ||
           (uCollege && r.college.toLowerCase().includes(uCollege.toLowerCase()))
         ));
@@ -379,37 +386,66 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate, onViewEvent }) => {
                 Log in to access your verified festival participation and merit certificates.
               </div>
             ) : certificates.length === 0 ? (
-              <div className="text-center py-8 text-[#006D8F] text-xs">
-                Certificates become automatically accessible in your portal once event adjudicators publish verified tournament results.
+              <div className="text-center py-8 space-y-2">
+                <Award className="w-10 h-10 mx-auto text-[#006D8F]/30" />
+                <p className="text-[#006D8F] text-sm font-semibold">No certificates yet</p>
+                <p className="text-xs text-[#006D8F]/70 max-w-sm mx-auto">
+                  Certificates are issued after event results are published and the admin enables certificate availability. They will appear here automatically.
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {certificates.map(cert => (
-                  <div
-                    key={cert.id}
-                    onClick={() => setSelectedCert(cert)}
-                    className="p-4 rounded-2xl bg-[#DDF3F0]/40 border border-[#006D8F]/15 hover:border-[#20B2AA] cursor-pointer transition-all space-y-3 group"
-                  >
-                    <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#006D8F]/15 text-[#006D8F] border border-[#006D8F]/25">
-                        {cert.certificate_type}
-                      </span>
-                      <span className="text-[10px] font-mono text-[#064E52]/70 font-bold">{cert.certificate_id}</span>
-                    </div>
+                {certificates.map(cert => {
+                  const isWinner = cert.certificate_type !== 'Participation Certificate';
+                  const pos = cert.winner_position;
+                  const medalEmoji = pos === '1st Place' ? '🥇' : pos === '2nd Place' ? '🥈' : pos === '3rd Place' ? '🥉' : null;
+                  return (
+                    <div
+                      key={cert.id}
+                      onClick={() => setSelectedCert(cert)}
+                      className="p-4 rounded-2xl bg-[#DDF3F0]/40 border border-[#006D8F]/15 hover:border-[#20B2AA] cursor-pointer transition-all space-y-3 group"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-1.5">
+                          {medalEmoji && <span className="text-sm">{medalEmoji}</span>}
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${
+                            isWinner
+                              ? 'bg-amber-50 text-amber-700 border-amber-200'
+                              : 'bg-[#006D8F]/15 text-[#006D8F] border-[#006D8F]/25'
+                          }`}>
+                            {cert.certificate_type}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-mono text-[#064E52]/70 font-bold">{cert.certificate_id}</span>
+                      </div>
 
-                    <div>
-                      <h4 className="font-bold text-xs text-[#064E52] group-hover:text-[#20B2AA] transition-colors">
-                        {cert.event_name}
-                      </h4>
-                      <p className="text-[11px] text-[#006D8F] mt-1 font-medium">{cert.achievement}</p>
-                    </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-[#064E52] group-hover:text-[#20B2AA] transition-colors line-clamp-2">
+                          {cert.event_name}
+                        </h4>
+                        <p className="text-[11px] text-[#006D8F] mt-1 font-medium">{cert.achievement}</p>
+                        <p className="text-[10px] text-[#006D8F]/60 mt-0.5">Issued: {cert.issue_date}</p>
+                      </div>
 
-                    <div className="pt-2 border-t border-[#006D8F]/10 flex items-center justify-between text-xs text-[#006D8F] group-hover:text-[#20B2AA] font-bold">
-                      <span>View &amp; Download</span>
-                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <div className="pt-2 border-t border-[#006D8F]/10 flex items-center justify-between text-xs text-[#006D8F] group-hover:text-[#20B2AA] font-bold">
+                        <span>View &amp; Download PDF</span>
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Verify link */}
+            {certificates.length > 0 && (
+              <div className="text-center pt-2">
+                <button
+                  onClick={() => onNavigate?.('/verify')}
+                  className="text-xs text-[#006D8F] hover:text-[#20B2AA] font-semibold underline underline-offset-2 transition-colors"
+                >
+                  🔍 Verify a certificate by ID
+                </button>
               </div>
             )}
           </section>
